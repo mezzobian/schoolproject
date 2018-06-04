@@ -13,8 +13,6 @@ import javafx.scene.control.TextField;
 import models.Author;
 import models.Book;
 
-import javax.swing.*;
-
 public class AuthorBookController {
 
     private int authorIDCounter = 100;
