@@ -9,9 +9,10 @@ import java.util.List;
 public class Book {
     private IntegerProperty bookId;               //models.Book-ID
     private StringProperty title;          //Buchtitel
-    private StringProperty year;              //Erscheinungsjahr
+    private IntegerProperty year;              //Erscheinungsjahr
     private List<Author> authors;   //Liste aller Autoren
     private StringProperty place;            //Erscheinungsort
+    private StringProperty authorsString;
 
     public static Comparator<Book> TITLE_CMP = new Comparator<Book>() {
         @Override
@@ -34,12 +35,47 @@ public class Book {
         }
     };
 
-    public Book(int bookId, String title, String year, String place) {
+    /**
+     * Constructor for a book without author
+     */
+    public Book(int bookId, String title, int year, String place) {
         this.bookId = new SimpleIntegerProperty(bookId);
         this.title = new SimpleStringProperty(title);
-        this.year = new SimpleStringProperty(year);
+        this.year = new SimpleIntegerProperty(year);
         this.place = new SimpleStringProperty(place);
-        this.authors = new LinkedList<Author>();
+
+        this.authors = new LinkedList<>();
+
+        this.authorsString = new SimpleStringProperty(this.getAuthorsString());
+    }
+
+    /**
+     * Constructor for 1 author
+     */
+    public Book(int bookId, String title, int year, String place, Author author) {
+        this.bookId = new SimpleIntegerProperty(bookId);
+        this.title = new SimpleStringProperty(title);
+        this.year = new SimpleIntegerProperty(year);
+        this.place = new SimpleStringProperty(place);
+
+        List<Author> authors = new LinkedList<>();
+        authors.add(author);
+        this.authors = authors;
+
+        this.authorsString = new SimpleStringProperty(this.getAuthorsString());
+    }
+
+    /**
+     * Constructor for multiple authors
+     */
+    public Book(int bookId, String title, int year, String place, LinkedList<Author> authors) {
+        this.bookId = new SimpleIntegerProperty(bookId);
+        this.title = new SimpleStringProperty(title);
+        this.year = new SimpleIntegerProperty(year);
+        this.place = new SimpleStringProperty(place);
+        this.authors = authors;
+
+        this.authorsString = new SimpleStringProperty(this.getAuthorsString());
     }
 
     public int getBookId() {
@@ -69,13 +105,13 @@ public class Book {
         this.title = title;
     }*/
 
-    public String getYear() {
+    public int getYear() {
         return year.get();
     }
 
-    public StringProperty yearProperty(){
+    public ObjectProperty<Integer> yearProperty(){
 
-        return this.year;
+        return this.year.asObject();
     }
 
     /*
@@ -92,6 +128,12 @@ public class Book {
 
         return this.place;
     }
+
+    public StringProperty authorsProperty() {
+
+        return this.authorsString;
+    }
+
     /*
     public void setPlace(String place) {
         this.place = place;

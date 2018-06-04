@@ -8,7 +8,7 @@ public class BookTest {
     public static void main(String[] args) {
 
         //Erstellen einer Buch-Instanz ohne Autoren
-        Book book = new Book(100, "Datenbanksysteme", "2008", "Bern");
+        Book book = new Book(100, "Datenbanksysteme", 2008, "Bern");
 
         //Erstellen der Autoren
         Author a1 = new Author(1, "Meier", "Ina", "CH");

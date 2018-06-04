@@ -10,8 +10,12 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.TextFieldListCell;
 import models.Author;
 import models.Book;
+
+import java.util.LinkedList;
+import java.util.Random;
 
 public class AuthorBookController {
 
@@ -40,7 +44,7 @@ public class AuthorBookController {
     @FXML
     private TableColumn<Book, String> book_place;
     @FXML
-    private TableColumn<Book, String> book_year;
+    private TableColumn<Book, Integer> book_year;
     @FXML
     private TableColumn<Book, String> book_autor;
 
@@ -73,23 +77,28 @@ public class AuthorBookController {
     @FXML
     void addBook(ActionEvent event) {
 
+        int parsedYear = Integer.parseInt(reg_year.getText());
+
+        LinkedList<Author> authors = new LinkedList<>();
+
+        authors.add(reg_author.getSelectionModel().getSelectedItem());
+
         Book book = new Book(
                 this.bookIDCounter++,
                 reg_title.getText(),
+                parsedYear,
                 reg_place.getText(),
-                reg_year.getText()
-                //autor muss noch eingefügt werden
+                authors
         );
 
         // add the author to the list
         this.bookData.add(book);
 
         // blank the text fields
-            reg_title.setText("");
-            reg_place.setText("");
-            reg_year.setText("");
-            reg_author.setValue(null);
-
+        reg_title.setText("");
+        reg_place.setText("");
+        reg_year.setText("");
+        reg_author.setValue(null);
     }
 
     @FXML
@@ -99,11 +108,6 @@ public class AuthorBookController {
         Book bookToRemove = this.booktable.getSelectionModel().getSelectedItem();
 
         this.bookData.remove(bookToRemove);
-
-
-
-
-
     }
 
     @FXML
@@ -152,14 +156,13 @@ public class AuthorBookController {
         authorData.add(new Author(this.authorIDCounter++, "Jäggi", "Marc", "A"));
         authorData.add(new Author(this.authorIDCounter++, "Strub", "Dario", "CH"));
 
-        bookData.add(new Book (this.bookIDCounter++, "Java FX", "2018", "CH"));
-        bookData.add(new Book (this.bookIDCounter++, "My SQL", "2017", "USA"));
-        bookData.add(new Book (this.bookIDCounter++, "Network", "2016", "D"));
-        bookData.add(new Book (this.bookIDCounter++, "vmWare", "2015", "USA"));
-        bookData.add(new Book (this.bookIDCounter++, "Windows 10", "2018", "CH"));
+        Random randomGenerator = new Random();
 
-
-
+        bookData.add(new Book(this.bookIDCounter++, "Java FX", 2018, "CH", authorData.get(randomGenerator.nextInt(authorData.size()))));
+        bookData.add(new Book(this.bookIDCounter++, "My SQL", 2017, "USA", authorData.get(randomGenerator.nextInt(authorData.size()))));
+        bookData.add(new Book(this.bookIDCounter++, "Network", 2016, "D", authorData.get(randomGenerator.nextInt(authorData.size()))));
+        bookData.add(new Book(this.bookIDCounter++, "vmWare", 2015, "USA", authorData.get(randomGenerator.nextInt(authorData.size()))));
+        bookData.add(new Book(this.bookIDCounter++, "Windows 10", 2018, "CH", authorData.get(randomGenerator.nextInt(authorData.size()))));
     }
 
     @FXML
@@ -182,7 +185,7 @@ public class AuthorBookController {
         book_title.setCellValueFactory(cellData -> cellData.getValue().titleProperty());
         book_place.setCellValueFactory(cellData -> cellData.getValue().placeProperty());
         book_year.setCellValueFactory(cellData -> cellData.getValue().yearProperty());
-        //autor
+        book_autor.setCellValueFactory(cellData -> cellData.getValue().authorsProperty());
 
         SortedList<Book> sortedDataBook = new SortedList<Book>(bookData);
 
