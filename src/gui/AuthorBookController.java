@@ -1,5 +1,9 @@
 package gui;
 
+import dao.AuthorDAO;
+import dao.AuthorDAOSimple;
+import dao.BookDAO;
+import dao.BookDAOSimple;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
@@ -19,8 +23,9 @@ import java.util.Random;
 
 public class AuthorBookController {
 
-    private int authorIDCounter = 100;
-    private int bookIDCounter = 100;
+    private BookDAO bookDAO;
+
+    private AuthorDAO authorDAO;
 
     // The author table part
     @FXML
@@ -70,9 +75,15 @@ public class AuthorBookController {
     @FXML
     private Button reg_save_author;
 
-    // The data
-    private ObservableList<Author> authorData = FXCollections.observableArrayList();
-    private ObservableList<Book> bookData = FXCollections.observableArrayList();
+    /**
+     * The public constructor, to add some data
+     */
+    public AuthorBookController() {
+
+        this.authorDAO = new AuthorDAOSimple();
+
+        this.bookDAO = new BookDAOSimple();
+    }
 
     @FXML
     void addBook(ActionEvent event) {
@@ -84,7 +95,7 @@ public class AuthorBookController {
         authors.add(reg_author.getSelectionModel().getSelectedItem());
 
         Book book = new Book(
-                this.bookIDCounter++,
+                BookDAOSimple.bookIDCounter++,
                 reg_title.getText(),
                 parsedYear,
                 reg_place.getText(),
@@ -92,7 +103,7 @@ public class AuthorBookController {
         );
 
         // add the author to the list
-        this.bookData.add(book);
+        this.bookDAO.insert(book);
 
         // blank the text fields
         reg_title.setText("");
@@ -107,7 +118,7 @@ public class AuthorBookController {
         //remove a book
         Book bookToRemove = this.booktable.getSelectionModel().getSelectedItem();
 
-        this.bookData.remove(bookToRemove);
+        this.bookDAO.delete(bookToRemove.getBookId());
     }
 
     @FXML
@@ -115,14 +126,14 @@ public class AuthorBookController {
 
         // create the author
         Author author = new Author(
-                this.authorIDCounter++,
+                AuthorDAOSimple.authorIDCounter++,
                 reg_firstname.getText(),
                 reg_lastname.getText(),
                 reg_country.getText()
         );
 
         // add the author to the list
-        this.authorData.add(author);
+        this.authorDAO.insert(author);
 
         // blank the text fields
         reg_firstname.setText("");
@@ -134,35 +145,7 @@ public class AuthorBookController {
     void removeAuthor(ActionEvent event) {
         Author authorToRemove = this.authortable.getSelectionModel().getSelectedItem();
 
-        this.authorData.remove(authorToRemove);
-    }
-
-    /**
-     * The public constructor, to add some data
-     */
-    public AuthorBookController() {
-
-        authorData.add(new Author(this.authorIDCounter++, "Meier", "Rolf", "Deutschland"));
-        authorData.add(new Author(this.authorIDCounter++, "Brigger", "Eugen A.", "Schweiz"));
-        authorData.add(new Author(this.authorIDCounter++, "Famos", "Luisa", "Schweiz"));
-        authorData.add(new Author(this.authorIDCounter++, "Super", "Ruedi", "Österreich"));
-        authorData.add(new Author(this.authorIDCounter++, "Shaqiri", "Bljerim", "Albanien"));
-        authorData.add(new Author(this.authorIDCounter++, "Schmid", "Robin", "CH"));
-        authorData.add(new Author(this.authorIDCounter++, "Rack", "Janis", "CH"));
-        authorData.add(new Author(this.authorIDCounter++, "Müller", "Sabrina", "CH"));
-        authorData.add(new Author(this.authorIDCounter++, "Muster", "Hans", "D"));
-        authorData.add(new Author(this.authorIDCounter++, "Mast", "Michel", "USA"));
-        authorData.add(new Author(this.authorIDCounter++, "Lehmann", "Rachel", "CH"));
-        authorData.add(new Author(this.authorIDCounter++, "Jäggi", "Marc", "A"));
-        authorData.add(new Author(this.authorIDCounter++, "Strub", "Dario", "CH"));
-
-        Random randomGenerator = new Random();
-
-        bookData.add(new Book(this.bookIDCounter++, "Java FX", 2018, "CH", authorData.get(randomGenerator.nextInt(authorData.size()))));
-        bookData.add(new Book(this.bookIDCounter++, "My SQL", 2017, "USA", authorData.get(randomGenerator.nextInt(authorData.size()))));
-        bookData.add(new Book(this.bookIDCounter++, "Network", 2016, "D", authorData.get(randomGenerator.nextInt(authorData.size()))));
-        bookData.add(new Book(this.bookIDCounter++, "vmWare", 2015, "USA", authorData.get(randomGenerator.nextInt(authorData.size()))));
-        bookData.add(new Book(this.bookIDCounter++, "Windows 10", 2018, "CH", authorData.get(randomGenerator.nextInt(authorData.size()))));
+        this.authorDAO.delete(authorToRemove.getId());
     }
 
     @FXML
@@ -173,7 +156,7 @@ public class AuthorBookController {
         author_lastname.setCellValueFactory(cellData -> cellData.getValue().lastNameProperty());
         author_country.setCellValueFactory(cellData -> cellData.getValue().countryProperty());
 
-        SortedList<Author> sortedData = new SortedList<Author>(authorData);
+        SortedList<Author> sortedData = this.authorDAO.getAll();
 
         sortedData.comparatorProperty().bind(authortable.comparatorProperty());
 
@@ -187,7 +170,7 @@ public class AuthorBookController {
         book_year.setCellValueFactory(cellData -> cellData.getValue().yearProperty());
         book_autor.setCellValueFactory(cellData -> cellData.getValue().authorsProperty());
 
-        SortedList<Book> sortedDataBook = new SortedList<Book>(bookData);
+        SortedList<Book> sortedDataBook = this.bookDAO.getAll();
 
         sortedDataBook.comparatorProperty().bind(booktable.comparatorProperty());
 
@@ -195,7 +178,6 @@ public class AuthorBookController {
 
 
         // Set up the registration of books
-        reg_author.setItems(authorData);
+        reg_author.setItems(authorDAO.getAll());
     }
-
 }

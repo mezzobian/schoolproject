@@ -1,7 +1,7 @@
 package tests;
 
-import dao.AutorDAO;
-import dao.AutorDAOSimple;
+import dao.AuthorDAO;
+import dao.AuthorDAOSimple;
 import models.Author;
 
 import java.util.Collections;
@@ -15,7 +15,7 @@ public class AutorTest {
       Author a3 = new Author(102, "Famos", "Luisa", "CH");
       Author a4 = new Author(100, "Abgottspon", "Johann", "CH");
       
-      AutorDAO autorData = new AutorDAOSimple();
+      AuthorDAO autorData = new AuthorDAOSimple();
       
       System.out.println("Alle Autoren: " + autorData.getAll() );
       
