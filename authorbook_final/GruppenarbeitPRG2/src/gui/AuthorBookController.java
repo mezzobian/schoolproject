@@ -129,6 +129,9 @@ public class AuthorBookController {
         reg_place.setText(bookToEdit.getPlace());
         reg_year.setText("" + bookToEdit.getYear());
         reg_author.setValue(bookToEdit.getAuthors().get(0));
+
+        this.bookDAO.delete(bookToEdit.getBookId());
+
     }
 
     @FXML
