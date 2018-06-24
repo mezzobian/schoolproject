@@ -122,6 +122,16 @@ public class AuthorBookController {
     }
 
     @FXML
+    void editBook(ActionEvent event) {
+        Book bookToEdit = this.booktable.getSelectionModel().getSelectedItem();
+
+        reg_title.setText(bookToEdit.getTitle());
+        reg_place.setText(bookToEdit.getPlace());
+        reg_year.setText("" + bookToEdit.getYear());
+        reg_author.setValue(bookToEdit.getAuthors().get(0));
+    }
+
+    @FXML
     void addAuthor(ActionEvent event) {
 
         // create the author

@@ -37,6 +37,7 @@
                             </columns>
                         </TableView>
                   <Button layoutX="465.0" mnemonicParsing="false" onAction="#removeBook" style="-fx-background-color: #cc2222;" text="Buch löschen" textFill="WHITE" />
+                  <Button layoutX="300.0" mnemonicParsing="false" onAction="#editBook" style="-fx-background-color: #cccc22;" text="Buch bearbeiten" textFill="WHITE" />
                     </children>
                 </AnchorPane>
             </content>
